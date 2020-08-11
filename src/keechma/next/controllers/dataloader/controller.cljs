@@ -1,8 +1,8 @@
 (ns keechma.next.controllers.dataloader.controller
   (:require [keechma.next.controller :as ctrl]
             [keechma.next.controllers.dataloader.protocols :as pt :refer [IDataloaderApi]]
-            [keechma.next.toolbox.pipeline :as pp :refer [in-pipeline?]]
-            [keechma.next.toolbox.pipeline.runtime :as ppr]
+            [keechma.pipelines.core :as pp :refer [in-pipeline?]]
+            [keechma.pipelines.runtime :as ppr]
             [cljs.core.async :refer [alts! timeout <! close! chan]]
             [goog.object :as gobj]
             [promesa.core :as p]

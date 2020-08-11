@@ -12,4 +12,5 @@
         keechma/entitydb {:mvn/version "2.0.2"}
         keechma/pipelines {:mvn/version "0.0.4"}
         keechma/forms {:mvn/version "0.1.7"}
-        cljs-bean {:mvn/version "1.5.0"}}}
+        cljs-bean {:mvn/version "1.5.0"}
+        binaryage/oops {:mvn/version "0.7.0"}}}
