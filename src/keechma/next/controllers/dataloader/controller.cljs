@@ -56,7 +56,7 @@
          (p/error (fn [err]
                     (let [cached (get-in @cache* [:cache [loader req-opts]])]
                       (if (and cached (:keechma.dataloader/stale-if-error dataloader-opts))
-                        cached
+                        (:data cached)
                         (throw err))))))))
 
 (defn pp-set-revalidate [interpreter-state runtime pipeline-opts req]
