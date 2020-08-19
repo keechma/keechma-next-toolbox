@@ -51,7 +51,7 @@
              (let [[_ c] (alts! [poison-chan (timeout interval)])]
                (when-not (= c poison-chan)
                  (<! (request-idle-callback-chan!))
-                 (swap! state* edb/vacuum)
+                 (ctrl/transact ctrl #(swap! state* edb/vacuum))
                  (recur))))
     (fn []
       (close! poison-chan))))
