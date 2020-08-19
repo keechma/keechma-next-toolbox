@@ -89,6 +89,11 @@
       (mark-dirty-and-validate validator false)
       (assoc-in [::form :submit-attempted?] true)))
 
+(defn mount-form [meta-state value]
+  (assoc meta-state ::form (make-initial-state value)))
+
+(defn get-form-data [meta-state]
+  (get meta-state ::form))
 
 (defn make-form-pipelines [form-pipeline-api validator]
   (let [submit-data (:keechma.form/submit-data form-pipeline-api)]
@@ -111,7 +116,7 @@
                              (:keechma.on/start form-pipeline-api)
                              value'))
                          (or (:keechma.form/get-data form-pipeline-api) {})
-                         (pp/swap! meta-state* assoc ::form (make-initial-state value)))}))
+                         (pp/swap! meta-state* mount-form value))}))
 
 (defn wrap [pipelines validator]
   (let [form-pipeline-api (select-keys pipelines form-pipeline-api-keys)]
