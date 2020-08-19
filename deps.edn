@@ -7,7 +7,7 @@
         camel-snake-kebab {:mvn/version "0.4.1"}
         medley {:mvn/version "1.2.0"}
         cljs-ajax {:mvn/version "0.8.0"}
-        keechma/next {:mvn/version "0.0.1"}
+        keechma/next {:mvn/version "0.0.2"}
         keechma/router {:mvn/version "1.0.0"}
         keechma/entitydb {:mvn/version "2.0.2"}
         keechma/pipelines {:mvn/version "0.0.4"}
