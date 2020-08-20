@@ -59,7 +59,7 @@
             ctrl' (assoc ctrl ::runtime* runtime*)
             opts {:transactor (partial protocols/-transact app)
                   :watcher (make-watcher ctrl')}
-            runtime (start! ctrl' pipelines' opts)]
+            runtime (start! ctrl pipelines' opts)]
         (reset! runtime* runtime)
         ctrl')
       ctrl)))
