@@ -85,19 +85,16 @@
 (defn handle-on-submit [meta-state validator payload]
       (-> meta-state
           (mark-dirty-and-validate validator false)
-          (assoc-in [::form :submit-attempted?] true)
-          (assoc-in [::form :state :type] :submitted)))
+          (assoc-in [::form :submit-attempted?] true)))
 
 (defn mount-form [meta-state value]
       (-> meta-state
           (assoc ::form (make-initial-state value))
-          (assoc-in [::form :state :type] :mounted)))
+          (assoc-in [::form :state] {:type :mounted})))
 
 (defn handle-error [meta-state error]
       (-> meta-state
-          (assoc-in [::form :errors] error)
-          (assoc-in [::form :state :type] :error)
-          (assoc-in [::form :state :cause] error)))
+          (assoc-in [::form :state] {:type :error :cause error})))
 
 (defn get-form-data [meta-state]
       (get meta-state ::form))
@@ -106,12 +103,15 @@
       (let [submit-data (:keechma.form/submit-data form-pipeline-api)]
            {:keechma.form/submit    (-> (pipeline! [value {:keys [meta-state*]}]
                                                    (pp/swap! meta-state* handle-on-submit validator value)
-                                                   (rescue! [error]
-                                                            (pp/swap! meta-state* handle-error error))
+
                                                    (when (and submit-data (valid? @meta-state*))
                                                          (pipeline! [_ {:keys [meta-state*]}]
+                                                                    (pp/swap! meta-state* assoc-in [::form :state] {:type :submitting})
                                                                     (get-data @meta-state*)
-                                                                    submit-data)))
+                                                                    submit-data
+                                                                    (pp/swap! meta-state* assoc-in [::form :state] {:type :submitted})
+                                                                    (rescue! [error]
+                                                                             (pp/swap! meta-state* handle-error error)))))
                                         pp/use-existing
                                         pp/dropping)
             :keechma.form/validate  (pipeline! [value ctrl])
