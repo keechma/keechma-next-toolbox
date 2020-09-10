@@ -15,7 +15,7 @@
        :cached-dirty-paths #{}
        :data               value
        :initial-data       value
-       :state              {}})
+       :state              {:type :mounted}})
 
 (defn get-errors [meta-state]
       (get-in meta-state [::form :errors]))
@@ -89,8 +89,7 @@
 
 (defn mount-form [meta-state value]
       (-> meta-state
-          (assoc ::form (make-initial-state value))
-          (assoc-in [::form :state] {:type :mounted})))
+          (assoc ::form (make-initial-state value))))
 
 (defn handle-error [meta-state error]
       (-> meta-state
@@ -123,7 +122,7 @@
                                       [value {:keys [meta-state*]}]
                                       (let [value' value]
                                            (pipeline! [_ _]
-                                                      (pp/swap! meta-state* assoc-in [::form :state :type] :mounting)
+                                                      (pp/swap! meta-state* assoc-in [::form :state] {:type :mounting})
                                                       (:keechma.on/start form-pipeline-api)
                                                       value'))
                                       (or (:keechma.form/get-data form-pipeline-api) {})
