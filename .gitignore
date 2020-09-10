@@ -6,3 +6,4 @@ public/css/
 node_modules
 .clj-kondo
 .idea/
+out/
