@@ -102,6 +102,7 @@
 
 (def use-sub (make-keechma-app-fn (make-sub :data)))
 (def use-meta-sub (make-keechma-app-fn (make-sub :meta)))
+(def use-form-state-sub (:keechma.next.controllers.form/form use-meta-sub))
 (def dispatch (make-keechma-app-fn keechma/dispatch))
 (def broadcast (make-keechma-app-fn keechma/broadcast))
 (def call (make-keechma-app-fn keechma/call))
