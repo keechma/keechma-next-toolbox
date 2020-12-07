@@ -23,7 +23,7 @@
 
 (defn bind-listener [ctrl routes]
   (let [history (get-history)
-        handler #(ctrl/handle ctrl :keechma.router.on/route-change (get-route routes (.-token %)))]
+        handler #(ctrl/handle ctrl :keechma.router.on/route-change (get-route routes ^js/String (.-token %)))]
     (events/listen history EventType/NAVIGATE handler)
     (.setEnabled history true)
     (fn []
