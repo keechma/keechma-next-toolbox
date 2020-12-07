@@ -30,3 +30,6 @@
 (def remove-entity! (keechma-pt/make-api-proxy pt/remove-entity!))
 (def remove-named! (keechma-pt/make-api-proxy pt/remove-named!))
 (def remove-collection! (keechma-pt/make-api-proxy pt/remove-collection!))
+(defn update! [{:keechma/keys [app]} controller-name update-fn & args]
+  (let [api* (keechma-pt/-get-api* app controller-name)]
+    (pt/update! @api* update-fn args)))

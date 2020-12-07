@@ -35,6 +35,9 @@
     nil)
   (remove-collection! [_ collection-name]
     (ctrl/transact ctrl #(swap! state* edb/remove-collection collection-name))
+    nil)
+  (update! [_ update-fn args]
+    (ctrl/transact ctrl #(swap! state* (fn [state] (apply update-fn state args))))
     nil))
 
 (defn request-idle-callback-chan! []
