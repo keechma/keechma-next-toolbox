@@ -9,7 +9,7 @@
         cljs-ajax {:mvn/version "0.8.0"}
         keechma/next {:mvn/version "0.0.6"}
         keechma/router {:mvn/version "1.0.0"}
-        keechma/entitydb {:mvn/version "2.0.2"}
+        keechma/entitydb {:mvn/version "2.0.3"}
         keechma/pipelines {:mvn/version "0.0.5"}
         keechma/forms {:mvn/version "0.1.7"}
         cljs-bean {:mvn/version "1.5.0"}
