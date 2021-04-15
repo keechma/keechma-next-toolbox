@@ -28,7 +28,7 @@
 
 
 (defn get-data-in [meta-state path]
-      (get-in (get-data meta-state) (key-to-path path))) =
+      (get-in (get-data meta-state) (key-to-path path)))
 
 (defn get-errors-in [meta-state path]
       (let [form-state (::form meta-state)
