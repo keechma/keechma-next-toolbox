@@ -10,7 +10,7 @@
         keechma/next {:mvn/version "0.0.8"}
         keechma/router {:mvn/version "1.0.0"}
         keechma/entitydb {:mvn/version "2.0.3"}
-        keechma/pipelines {:mvn/version "0.0.6"}
+        keechma/pipelines {:mvn/version "0.0.7"}
         keechma/forms {:mvn/version "0.1.7"}
         keechma/malli-forms {:git/url "https://github.com/keechma/keechma-malli-forms"
                              :sha "3c784fb697d1c4cb7719a086575df2eea89615b3"}
