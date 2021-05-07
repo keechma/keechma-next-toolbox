@@ -17,6 +17,10 @@
 (def get-entity edb/get-entity)
 (def get-named edb/get-named)
 (def get-collection edb/get-collection)
+(def get-ident-for-named edb/get-ident-for-named)
+(def get-idents-for-collection edb/get-idents-for-collection)
+(def get-entity-from-ident edb/get-entity-from-ident)
+(def get-entities-from-idents edb/get-entities-from-idents)
 
 (def include q/include)
 (def reverse-include q/reverse-include)
