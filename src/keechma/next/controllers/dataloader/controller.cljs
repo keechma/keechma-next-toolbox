@@ -79,11 +79,11 @@
 
 (defn make-req-stale-while-revalidate [cache* cached loader req-opts dataloader-opts]
   (ppr/fn->pipeline-step
-    (fn [runtime _ _ _ {:keys [interpreter-state] :as pipeline-opts}]
-      (ppr/interpreter-state->resumable
-        (-> interpreter-state
-            (assoc-in [0 :state :value] cached)
-            (pp-set-revalidate runtime pipeline-opts (make-req cache* loader req-opts dataloader-opts)))))))
+   (fn [runtime _ _ _ {:keys [interpreter-state] :as pipeline-opts}]
+     (ppr/interpreter-state->resumable
+      (-> interpreter-state
+          (assoc-in [0 :state :value] cached)
+          (pp-set-revalidate runtime pipeline-opts (make-req cache* loader req-opts dataloader-opts)))))))
 
 (defn loading-strategy [cached dataloader-opts]
   (let [{:keechma.dataloader/keys [max-age max-stale stale-while-revalidate]} dataloader-opts
@@ -137,11 +137,11 @@
         cache-size (:keechma.dataloader/cache-size ctrl)
         poison-chan (chan)]
     (go-loop []
-             (let [[_ c] (alts! [poison-chan (timeout interval)])]
-               (when-not (= c poison-chan)
-                 (<! (request-idle-callback-chan!))
-                 (swap! cache* evict-lru cache-size)
-                 (recur))))
+      (let [[_ c] (alts! [poison-chan (timeout interval)])]
+        (when-not (= c poison-chan)
+          (<! (request-idle-callback-chan!))
+          (swap! cache* evict-lru cache-size)
+          (recur))))
     (fn []
       (close! poison-chan))))
 
@@ -150,7 +150,7 @@
                   (update :keechma.dataloader/request-options #(merge default-request-options %))
                   (assoc ::cache* (atom {})))]
     (assoc ctrl'
-      ::stop-evict-lru! (start-evict-lru! ctrl'))))
+           ::stop-evict-lru! (start-evict-lru! ctrl'))))
 
 (defmethod ctrl/api :keechma/dataloader [ctrl]
   (let [{:keys [invoke]} (::pipeline-runtime ctrl)]

@@ -1,0 +1,17 @@
+{:lint-as {nubank.workspaces.core/defcard              cljs.core/def
+           nubank.workspaces.core/deftest              cljs.core/def
+           keechma.next.helix.lib/defnc                cljs.core/defn
+           keechma.next.helix.template/defnt           cljs.core/defn
+           keechma.next.helix.classified/defclassified cljs.core/def
+           keechma.next.toolbox.pipeline/pipeline!     cljs.core/fn
+
+           keechma.pipelines.core/rescue!              cljs.core/fn
+           promesa.core/let                            cljs.core/let}
+ :linters {:unused-binding {:exclude-destructured-keys-in-fn-args true}
+           :unresolved-var    {:exclude [helix.dom
+                                         com.rpl.specter]}
+           :unresolved-symbol {:exclude [(keechma.next.helix.lib/defnc [props])
+                                         (keechma.pipelines.core/pipeline!)
+                                         (keechma.pipelines.core/rescue!)
+                                         (keechma.next.helix.template/defnt [configurable slot optional-slot])]}}}
+

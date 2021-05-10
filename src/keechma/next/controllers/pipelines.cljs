@@ -10,12 +10,12 @@
 (defn get-throwable-pipelines-for-queue [state detached-idents {:keys [queue]}]
   (->> queue
        (map
-         (fn [ident]
-           (let [instance (get-in state [:instances ident])]
-             (when-not (or (= ::ppr/waiting-children (:state instance))
-                           (contains? detached-idents ident))
-               {:ident ident
-                :deferred-result (get-in instance [:props :deferred-result])}))))
+        (fn [ident]
+          (let [instance (get-in state [:instances ident])]
+            (when-not (or (= ::ppr/waiting-children (:state instance))
+                          (contains? detached-idents ident))
+              {:ident ident
+               :deferred-result (get-in instance [:props :deferred-result])}))))
        (remove nil?)
        vec))
 

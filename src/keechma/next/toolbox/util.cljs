@@ -13,11 +13,11 @@
 (defn promise->chan [promise]
   (let [promise-chan (chan)]
     (->> promise
-      (p/map (fn [v]
-               (when v
-                 (put! promise-chan v))
-               (close! promise-chan)))
-      (p/error (fn [e]
-                 (put! promise-chan (as-error e))
-                 (close! promise-chan))))
+         (p/map (fn [v]
+                  (when v
+                    (put! promise-chan v))
+                  (close! promise-chan)))
+         (p/error (fn [e]
+                    (put! promise-chan (as-error e))
+                    (close! promise-chan))))
     promise-chan))

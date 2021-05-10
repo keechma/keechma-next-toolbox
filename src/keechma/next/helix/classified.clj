@@ -14,14 +14,14 @@
        {:helix/features {:fast-refresh false}}
        (let [class# (str/join " " (flatten [(get-classes ~'props ~classes ~@togglers) (:class ~'props) (:className ~'props)]))
              props# (->> (dissoc ~'props :class :className)
-                      (get-element-props))]
+                         (get-element-props))]
          (if (fn? ~component-type)
            (~component-type {:className class# :& props#} (:children ~'props))
            ($ ~component-type {:className class# & props#} (:children ~'props)))))))
 
 (comment
   (clojure.pprint/pprint
-    (macroexpand-1
-      '(defclassified Heading :h1
-         "text-bold"
-         (fn [{:keys [props]}] "foo")))))
+   (macroexpand-1
+     '(defclassified Heading :h1
+        "text-bold"
+        (fn [{:keys [props]}] "foo")))))

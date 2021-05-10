@@ -1,17 +1,17 @@
 (ns keechma.next.helix.core
   (:require
-    [clojure.string :as string]
-    [helix.core :as hx :refer [$ <>]]
-    [helix.dom :as d]
-    [helix.hooks :as hooks]
-    [keechma.next.helix.lib :refer [defnc]]
-    ["react" :as react]
-    ["react-dom" :as rdom]
-    [keechma.next.core :as keechma]
-    [keechma.next.controller :as ctrl]
-    [goog.object :as gobj]
-    [cljs-bean.core :refer [bean]]
-    [clojure.string :as str]))
+   [clojure.string :as string]
+   [helix.core :as hx :refer [$ <>]]
+   [helix.dom :as d]
+   [helix.hooks :as hooks]
+   [keechma.next.helix.lib :refer [defnc]]
+   ["react" :as react]
+   ["react-dom" :as rdom]
+   [keechma.next.core :as keechma]
+   [keechma.next.controller :as ctrl]
+   [goog.object :as gobj]
+   [cljs-bean.core :refer [bean]]
+   [clojure.string :as str]))
 
 (def keechma-app-context (react/createContext nil))
 
@@ -32,20 +32,20 @@
            processor' (or processor identity)
            get-current-value
            (hooks/use-callback
-             [processor' get-state (pr-str controller) (keechma/get-id app)]
-             (comp processor' (partial get-state app controller)))
+            [processor' get-state (pr-str controller) (keechma/get-id app)]
+            (comp processor' (partial get-state app controller)))
 
            get-initial-state
            (hooks/use-callback
-             [get-current-value subscribe!]
-             #js {:get-current-value get-current-value
-                  :subscribe subscribe!
-                  :value (get-current-value)})
+            [get-current-value subscribe!]
+            #js {:get-current-value get-current-value
+                 :subscribe subscribe!
+                 :value (get-current-value)})
 
            batcher
            (hooks/use-callback
-             [(keechma/get-id app)]
-             (keechma/get-batcher app))
+            [(keechma/get-id app)]
+            (keechma/get-batcher app))
 
            [state set-state] (hooks/use-state get-initial-state)
 
@@ -62,26 +62,26 @@
        (react/useDebugValue ret-value)
 
        (hooks/use-effect
-         [get-current-value subscribe! (keechma/get-id app)]
-         (let [did-unsubscribe? (volatile! false)
-               check-for-updates
-               (fn []
-                 (when-not ^boolean @did-unsubscribe?
-                   (let [value (get-current-value)]
-                     (batcher
-                       (fn []
-                         (set-state
-                           (fn [v]
-                             (if (or (not (identical? (gobj/get v "get-current-value") get-current-value))
-                                     (not (identical? (gobj/get v "subscribe") subscribe!))
-                                     (= (gobj/get v "value") value))
-                               v
-                               (.assign js/Object #js {} v #js {:value value})))))))))
-               unsubscribe! (subscribe! app controller check-for-updates)]
-           (check-for-updates)
-           (fn []
-             (vreset! did-unsubscribe? true)
-             (unsubscribe!))))
+        [get-current-value subscribe! (keechma/get-id app)]
+        (let [did-unsubscribe? (volatile! false)
+              check-for-updates
+              (fn []
+                (when-not ^boolean @did-unsubscribe?
+                  (let [value (get-current-value)]
+                    (batcher
+                     (fn []
+                       (set-state
+                        (fn [v]
+                          (if (or (not (identical? (gobj/get v "get-current-value") get-current-value))
+                                  (not (identical? (gobj/get v "subscribe") subscribe!))
+                                  (= (gobj/get v "value") value))
+                            v
+                            (.assign js/Object #js {} v #js {:value value})))))))))
+              unsubscribe! (subscribe! app controller check-for-updates)]
+          (check-for-updates)
+          (fn []
+            (vreset! did-unsubscribe? true)
+            (unsubscribe!))))
        ret-value))))
 
 (defn with-keechma [Component]

@@ -32,7 +32,7 @@
 (defmethod ctrl/init :keechma/router [ctrl]
   (let [routes (router/expand-routes (:keechma/routes ctrl))]
     (assoc ctrl ::unlisten (bind-listener ctrl routes)
-                ::routes routes)))
+           ::routes routes)))
 
 (defmethod ctrl/api :keechma/router [ctrl]
   (let [routes (::routes ctrl)]

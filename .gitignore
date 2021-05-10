@@ -4,7 +4,7 @@ public/css/
 .cpcache
 .shadow-cljs
 node_modules
-.clj-kondo
+.clj-kondo/.cache
 .idea/
 out/
 .lsp

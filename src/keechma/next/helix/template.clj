@@ -26,13 +26,13 @@
   (let [parent  (last (:path cursor))
         cursor' (if parent (update-in cursor [:slots parent :children] conj slot-name) cursor)]
     (-> cursor'
-      (update :path conj slot-name)
-      (add-slot-as-descendant slot-name)
-      (assoc-in [:slots slot-name] {:children    #{}
-                                    :descendants #{}
-                                    :configurables #{}
-                                    :parent      parent
-                                    :is-optional is-optional}))))
+        (update :path conj slot-name)
+        (add-slot-as-descendant slot-name)
+        (assoc-in [:slots slot-name] {:children    #{}
+                                      :descendants #{}
+                                      :configurables #{}
+                                      :parent      parent
+                                      :is-optional is-optional}))))
 
 (defn cursor-with-configurable [cursor [_ configurable-name & _]]
   (let [parent (last (:path cursor))
@@ -82,39 +82,39 @@
        ~(merge default-opts opts)
        (let [~params ~params-sym]
          ~@(prewalk
-             (fn [node]
-               (let [is-slot          (internal-fn? "slot" node)
-                     is-optional-slot (internal-fn? "optional-slot" node)]
-                 (cond
-                   is-slot
-                   (let [[_ slot-name & slot-body] node
-                         wrapped-slot `(fn [] ~(if (= 1 (count slot-body)) `~(first slot-body) `(<> ~@slot-body)))]
-                     `(let [wrapped-slot# ~wrapped-slot
-                            filled-slot#  (get-in ~props-sym [::slots ~slot-name])]
-                        (if (fn? filled-slot#)
-                          (filled-slot# wrapped-slot#)
-                          (or filled-slot# (wrapped-slot#)))))
+            (fn [node]
+              (let [is-slot          (internal-fn? "slot" node)
+                    is-optional-slot (internal-fn? "optional-slot" node)]
+                (cond
+                  is-slot
+                  (let [[_ slot-name & slot-body] node
+                        wrapped-slot `(fn [] ~(if (= 1 (count slot-body)) `~(first slot-body) `(<> ~@slot-body)))]
+                    `(let [wrapped-slot# ~wrapped-slot
+                           filled-slot#  (get-in ~props-sym [::slots ~slot-name])]
+                       (if (fn? filled-slot#)
+                         (filled-slot# wrapped-slot#)
+                         (or filled-slot# (wrapped-slot#)))))
 
-                   is-optional-slot
-                   (let [[_ slot-name & slot-body] node
-                         wrapped-slot `(fn [] ~(if (= 1 (count slot-body)) `~(first slot-body) `(<> ~@slot-body)))]
-                     `(let [wrapped-slot# ~wrapped-slot
-                            filled-slot#  (get-in ~props-sym [::slots ~slot-name])]
-                        (when (some (::slots ~props-sym) ~(conj (get-in internal-fns [:slots slot-name :descendants]) slot-name))
-                          ~internal-fns
-                          (if (fn? filled-slot#)
-                            (filled-slot# wrapped-slot#)
-                            (or filled-slot# (wrapped-slot#))))))
+                  is-optional-slot
+                  (let [[_ slot-name & slot-body] node
+                        wrapped-slot `(fn [] ~(if (= 1 (count slot-body)) `~(first slot-body) `(<> ~@slot-body)))]
+                    `(let [wrapped-slot# ~wrapped-slot
+                           filled-slot#  (get-in ~props-sym [::slots ~slot-name])]
+                       (when (some (::slots ~props-sym) ~(conj (get-in internal-fns [:slots slot-name :descendants]) slot-name))
+                         ~internal-fns
+                         (if (fn? filled-slot#)
+                           (filled-slot# wrapped-slot#)
+                           (or filled-slot# (wrapped-slot#))))))
 
-                   (internal-fn? "configurable" node)
-                   (let [[_ configurable-name default-props] node]
-                     `{& (let [default-props#       ~default-props
-                               filled-configurable# (get-in ~props-sym [::configurables ~configurable-name])]
-                           (if (fn? filled-configurable#)
-                             (filled-configurable# default-props#)
-                             (or filled-configurable# default-props#)))})
-                   :else node)))
-             body)))))
+                  (internal-fn? "configurable" node)
+                  (let [[_ configurable-name default-props] node]
+                    `{& (let [default-props#       ~default-props
+                              filled-configurable# (get-in ~props-sym [::configurables ~configurable-name])]
+                          (if (fn? filled-configurable#)
+                            (filled-configurable# default-props#)
+                            (or filled-configurable# default-props#)))})
+                  :else node)))
+            body)))))
 
 
 (comment
@@ -123,31 +123,31 @@
       (slot :bar-main)))
 
   (clojure.pprint/pprint
-    (macroexpand-1
-      '(defnt Templated [props]
-         (d/div
-           (slot :foo "bar")))))
+   (macroexpand-1
+     '(defnt Templated [props]
+        (d/div
+          (slot :foo "bar")))))
 
   (clojure.pprint/pprint
-    (macroexpand-1
-      '(defnt Foo [props]
-         (d/div
-           #_(slot :main
-             ($ Bar (configurable :main/article {:foo :bar}))
-             (slot :main/foo
-               (d/div
-                 (slot :main.foo/bar
-                   (d/div "Hello")))))
-           (optional-slot :comments
-             (d/div
-               (slot :comments/body))))))
+   (macroexpand-1
+     '(defnt Foo [props]
+        (d/div
+          #_(slot :main
+                  ($ Bar (configurable :main/article {:foo :bar}))
+                  (slot :main/foo
+                        (d/div
+                          (slot :main.foo/bar
+                                (d/div "Hello")))))
+          (optional-slot :comments
+                         (d/div
+                           (slot :comments/body))))))
 
-    #_($ Article
-      (-> {:foo "bar"}
-        (configure :main/article {:bla :bla})
-        (fill-slot :main ($ ArticleBody))
-        (fill-slot :comments/body ($ Comments))
-        (fill-slot :main/foo (fn [super]
-                               ($ Bla (super)))))
+   #_($ Article
+        (-> {:foo "bar"}
+            (configure :main/article {:bla :bla})
+            (fill-slot :main ($ ArticleBody))
+            (fill-slot :comments/body ($ Comments))
+            (fill-slot :main/foo (fn [super]
+                                   ($ Bla (super)))))
 
-      ($ Child))))
+        ($ Child))))

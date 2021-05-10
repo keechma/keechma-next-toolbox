@@ -26,8 +26,8 @@
   (pipeline! [value {:keys [meta-state*]}]
     (let [{input-attr :input/attr input-value :input/value} value]
       (pp/swap! meta-state* update form-key #(-> %
-                                               (mf/assoc-in-data input-attr input-value)
-                                               mf/validate)))))
+                                                 (mf/assoc-in-data input-attr input-value)
+                                                 mf/validate)))))
 (def on-commit-change
   (pipeline! [value {:keys [meta-state*]}]
     (pp/swap! meta-state* update form-key mf/validate)))
@@ -44,11 +44,7 @@
         (js/console.warn (with-out-str (cljs.pprint/pprint {:keechma/controller (:keechma.controller/name ctrl)
                                                             :data (-> @meta-state* form-key mf/get-data)
                                                             :errors (-> @meta-state* form-key (mf/get-errors false))})))))))
-
 (def pipelines
   {:keechma.form/on-partial-change on-partial-change
    :keechma.form/on-atomic-change on-atomic-change
    :keechma.form/on-commit-change on-commit-change})
-
-
-

@@ -51,11 +51,11 @@
   (let [interval (or (:keechma.entitydb/vacuum-interval ctrl) (* 10 60 1000)) ;; Vacuum EntityDB every 10 minutes
         poison-chan (chan)]
     (go-loop []
-             (let [[_ c] (alts! [poison-chan (timeout interval)])]
-               (when-not (= c poison-chan)
-                 (<! (request-idle-callback-chan!))
-                 (ctrl/transact ctrl #(swap! state* edb/vacuum))
-                 (recur))))
+      (let [[_ c] (alts! [poison-chan (timeout interval)])]
+        (when-not (= c poison-chan)
+          (<! (request-idle-callback-chan!))
+          (ctrl/transact ctrl #(swap! state* edb/vacuum))
+          (recur))))
     (fn []
       (close! poison-chan))))
 

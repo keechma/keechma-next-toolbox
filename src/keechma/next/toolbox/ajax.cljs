@@ -13,11 +13,11 @@
                         :error-handler #(p/reject! deferred-result (as-error %))}
           req  (method url (merge opts default-opts))]
       (specify! deferred-result
-        pt/IAbortable
-        (abort! [this]
-          (when (oget req :?abort)
-            (ocall req :abort))
-          (p/reject! this (aborted-ex-info)))))))
+                pt/IAbortable
+                (abort! [this]
+                        (when (oget req :?abort)
+                          (ocall req :abort))
+                        (p/reject! this (aborted-ex-info)))))))
 
 (def GET (promisify ajax/GET))
 (def HEAD (promisify ajax/HEAD))
