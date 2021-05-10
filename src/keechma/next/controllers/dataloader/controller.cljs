@@ -153,8 +153,7 @@
            ::stop-evict-lru! (start-evict-lru! ctrl'))))
 
 (defmethod ctrl/api :keechma/dataloader [ctrl]
-  (let [{:keys [invoke]} (::pipeline-runtime ctrl)]
-    (->DataloaderApi ctrl)))
+  (->DataloaderApi ctrl))
 
 (defmethod ctrl/terminate :keechma/dataloader [ctrl]
   (let [stop-evict-lru! (::stop-evict-lru! ctrl)
