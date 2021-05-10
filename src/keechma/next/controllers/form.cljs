@@ -3,7 +3,8 @@
             [clojure.set :as set]
             [forms.util :refer [key-to-path]]
             [forms.dirty :refer [calculate-dirty-fields]]
-            [forms.core]))
+            [forms.core]
+            [medley.core :refer [dissoc-in]]))
 
 (def form-pipeline-api-keys #{:keechma.form/submit-data
                               :keechma.form/get-data
@@ -25,7 +26,6 @@
 
 (defn get-initial-data [meta-state]
   (get-in meta-state [::form :initial-data]))
-
 
 (defn get-data-in [meta-state path]
   (get-in (get-data meta-state) (key-to-path path)))
@@ -72,6 +72,10 @@
   (let [path' (key-to-path path)]
     (assoc-in meta-state (concat [::form :data] path') value)))
 
+(defn dissoc-data-in [meta-state path]
+  (let [path' (key-to-path path)]
+    (dissoc-in meta-state (concat [::form :data] path'))))
+
 (defn handle-on-change [meta-state validator payload]
   (let [path (key-to-path (:attr payload))
         should-validate-immediately? (or (:validate-immediately? payload) (path-invalid? meta-state path))]
@@ -115,6 +119,7 @@
                                  pp/dropping)
      :keechma.form/validate  (pipeline! [value ctrl])
      :keechma.form.on/change (pipeline! [value {:keys [meta-state*]}]
+                               (update value :attr key-to-path)
                                (pp/swap! meta-state* handle-on-change validator value))
      :keechma.form.on/blur   (pipeline! [value {:keys [meta-state*]}]
                                (pp/swap! meta-state* handle-on-blur validator value))
