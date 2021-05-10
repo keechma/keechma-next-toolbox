@@ -4,7 +4,8 @@
             [goog.events :as events]
             [goog.history.EventType :as EventType]
             [keechma.next.protocols :as keechma-pt]
-            [keechma.next.controllers.router.protocols :as pt :refer [IRouterApi]])
+            [keechma.next.controllers.router.protocols :as pt :refer [IRouterApi]]
+            [keechma.next.toolbox.event :as event])
   (:import goog.History))
 
 (derive :keechma/router :keechma/controller)
@@ -54,6 +55,7 @@
   (let [routes (::routes ctrl)]
     (case cmd
       :keechma.router.on/route-change (reset! state* payload)
+      :keechma.router.on/redirect (set! (.-hash js/location) (map->url routes payload))
       nil)))
 
 (defmethod ctrl/derive-state :keechma/router [_ state _]
@@ -72,3 +74,6 @@
 (def redirect! (make-api-proxy pt/redirect!))
 (def back! (make-api-proxy pt/back!))
 (def get-url (make-api-proxy pt/get-url))
+
+(defn to-redirect-event [controller-name payload]
+  (event/to-dispatch controller-name :keechma.router.on/redirect payload))
