@@ -93,6 +93,9 @@
               & (helix.core/extract-cljs-props props)})))
       react/forwardRef))
 
+(defn with-keechma-props [props]
+  (select-keys props [:keechma/app]))
+
 (defn make-keechma-app-fn [keechma-app-fn]
   (fn [props & args]
     (if-let [app (get props :keechma/app)]
