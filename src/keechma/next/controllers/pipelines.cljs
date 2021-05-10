@@ -1,6 +1,7 @@
 (ns keechma.next.controllers.pipelines
   (:require [keechma.next.controller :as ctrl]
             [keechma.next.protocols :as protocols]
+            [keechma.next.toolbox.protocols :as toolbox-protocols]
             [keechma.pipelines.core :refer [start! stop! invoke has-pipeline?]]
             [clojure.set :as set]
             [keechma.pipelines.runtime :as ppr]))
@@ -24,10 +25,10 @@
                              (filter (fn [[_ v]] (get-in v [:resumable :config :is-detached])))
                              (map first))]
     (reduce
-      (fn [acc detached-ident]
-        (set/union acc (set (ppr/get-ident-and-descendant-idents state detached-ident))))
-      #{}
-      detached-idents)))
+     (fn [acc detached-ident]
+       (set/union acc (set (ppr/get-ident-and-descendant-idents state detached-ident))))
+     #{}
+     detached-idents)))
 
 (defn make-watcher [{:keys [meta-state*]}]
   (fn [_ _ _ new-value]
@@ -50,7 +51,11 @@
    (when-let [p (get-promise meta-state pipeline args)]
      (throw p))))
 
-(defmethod ctrl/init ::controller [ctrl]
+(defn on-cancel [p]
+  (when (satisfies? toolbox-protocols/IAbortable p)
+    (toolbox-protocols/abort! p)))
+
+(defn init [ctrl]
   (let [pipelines (:keechma/pipelines ctrl)
         pipelines' (if (fn? pipelines) (pipelines ctrl) pipelines)
         app (:keechma/app ctrl)]
@@ -58,22 +63,32 @@
       (let [runtime* (atom nil)
             ctrl' (assoc ctrl ::runtime* runtime*)
             opts {:transactor (partial protocols/-transact app)
-                  :watcher (make-watcher ctrl')}
+                  :watcher (make-watcher ctrl')
+                  :on-cancel on-cancel}
             runtime (start! ctrl pipelines' opts)]
         (reset! runtime* runtime)
         ctrl')
       ctrl)))
 
-(defmethod ctrl/handle ::controller [ctrl cmd payload]
+(defn handle [ctrl cmd payload]
   (when-let [runtime* (::runtime* ctrl)]
     (let [runtime @runtime*]
       (when (has-pipeline? runtime cmd)
         (invoke runtime cmd payload)))))
 
-(defmethod ctrl/terminate ::controller [ctrl]
+(defn register [ctrl pipelines]
+  (assoc ctrl :keechma/pipelines pipelines))
+
+(defn terminate [ctrl]
   (when-let [runtime* (get-in ctrl [::runtime*])]
     (let [runtime @runtime*]
       (stop! runtime))))
 
-(defn register [ctrl pipelines]
-  (assoc ctrl :keechma/pipelines pipelines))
+(defmethod ctrl/init ::controller [ctrl]
+  (init ctrl))
+
+(defmethod ctrl/handle ::controller [ctrl cmd payload]
+  (handle ctrl cmd payload))
+
+(defmethod ctrl/terminate ::controller [ctrl]
+  (terminate ctrl))
