@@ -16,4 +16,4 @@
                              :sha "d36657f6195e2e6cbda95a806dedc36f7bb8d74f"}
         cljs-bean/cljs-bean {:mvn/version "1.5.0"}
         binaryage/oops {:mvn/version "0.7.0"}
-        metosin/malli {:mvn/version "0.5.1"}}
+        metosin/malli {:mvn/version "0.5.1"}}}
