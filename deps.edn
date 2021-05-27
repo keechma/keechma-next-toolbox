@@ -13,6 +13,7 @@
         keechma/pipelines {:mvn/version "0.0.7"}
         keechma/forms {:mvn/version "0.1.7"}
         keechma/malli-forms {:git/url "https://github.com/keechma/keechma-malli-forms"
-                             :sha "3c784fb697d1c4cb7719a086575df2eea89615b3"}
+                             :sha "d36657f6195e2e6cbda95a806dedc36f7bb8d74f"}
         cljs-bean/cljs-bean {:mvn/version "1.5.0"}
-        binaryage/oops {:mvn/version "0.7.0"}}}
+        binaryage/oops {:mvn/version "0.7.0"}
+        metosin/malli {:mvn/version "0.5.1"}}
