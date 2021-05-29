@@ -27,6 +27,18 @@
   (insert-collection! [_ entity-type collection-name data c-meta]
     (ctrl/transact ctrl #(swap! state* edb/insert-collection entity-type collection-name data c-meta))
     nil)
+  (prepend-collection! [_ entity-type collection-name data]
+    (ctrl/transact ctrl #(swap! state* edb/prepend-collection entity-type collection-name data))
+    nil)
+  (prepend-collection! [_ entity-type collection-name data c-meta]
+    (ctrl/transact ctrl #(swap! state* edb/prepend-collection entity-type collection-name data c-meta))
+    nil)
+  (append-collection! [_ entity-type collection-name data]
+    (ctrl/transact ctrl #(swap! state* edb/append-collection entity-type collection-name data))
+    nil)
+  (append-collection! [_ entity-type collection-name data c-meta]
+    (ctrl/transact ctrl #(swap! state* edb/append-collection entity-type collection-name data c-meta))
+    nil)
   (remove-entity! [_ entity-type id]
     (ctrl/transact ctrl #(swap! state* edb/remove-entity entity-type id))
     nil)
