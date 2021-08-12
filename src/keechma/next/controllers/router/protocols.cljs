@@ -2,5 +2,6 @@
 
 (defprotocol IRouterApi
   (redirect! [this params])
+  (replace! [this params])
   (back! [this])
   (get-url [this params]))

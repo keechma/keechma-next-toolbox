@@ -19,8 +19,13 @@
   (let [clean-url (subs url 1)]
     (router/url->map routes clean-url)))
 
+(defn url-with-hashbang [url]
+  (str "#!" url))
+
 (defn map->url [routes params]
-  (str "#!" (router/map->url routes params)))
+  (->> params
+       (router/map->url routes)
+       url-with-hashbang))
 
 (defn bind-listener [ctrl routes]
   (let [history (get-history)
@@ -30,21 +35,42 @@
     (fn []
       (events/unlisten history EventType/NAVIGATE handler))))
 
+(defn default-router-processor [next-params _]
+  next-params)
+
+(defn get-params-processor [{:keys [state*] :as ctrl}]
+  (let [processor (or (:router.params/processor ctrl) default-router-processor)]
+    (fn [next-params]
+      (let [params (:data @state*)]
+        (processor next-params params)))))
+
 (defmethod ctrl/init :keechma/router [ctrl]
   (let [routes (router/expand-routes (:keechma/routes ctrl))]
     (assoc ctrl ::unlisten (bind-listener ctrl routes)
            ::routes routes)))
 
 (defmethod ctrl/api :keechma/router [ctrl]
-  (let [routes (::routes ctrl)]
+  (let [params-processor (get-params-processor ctrl)
+        routes (::routes ctrl)
+        state* (:state* ctrl)]
     (reify
       IRouterApi
       (redirect! [_ payload]
-        (ctrl/transact ctrl (fn [] (set! (.-hash js/location) (map->url routes payload)))))
+        (ctrl/transact ctrl (fn [] (set! (.-hash js/location) (->> payload params-processor (map->url routes))))))
+      (replace! [_ payload]
+        (let [transaction (fn []
+                            ;; Do a double conversion payload -> url -> url-payload
+                            ;; to get the identical result to one we would get if the
+                            ;; user clicked on the link
+                            (let [url (->> payload params-processor (map->url routes))
+                                  url-payload (router/url->map routes url)]
+                              (.replaceState js/history nil "" (url-with-hashbang url))
+                              (reset! state* url-payload)))]
+          (ctrl/transact ctrl transaction)))
       (back! [_]
         (.back js/history))
       (get-url [_ params]
-        (map->url routes params)))))
+        (->> params params-processor (map->url routes))))))
 
 (defmethod ctrl/start :keechma/router [ctrl]
   (let [url (subs (.. js/window -location -hash) 2)
@@ -52,10 +78,11 @@
     (router/url->map routes url)))
 
 (defmethod ctrl/handle :keechma/router [{:keys [state*] :as ctrl} cmd payload]
-  (let [routes (::routes ctrl)]
+  (let [params-processor (get-params-processor ctrl)
+        routes (::routes ctrl)]
     (case cmd
       :keechma.router.on/route-change (reset! state* payload)
-      :keechma.router.on/redirect (set! (.-hash js/location) (map->url routes payload))
+      :keechma.router.on/redirect (set! (.-hash js/location) (->> payload params-processor (map->url routes)))
       nil)))
 
 (defmethod ctrl/derive-state :keechma/router [_ state _]
@@ -70,8 +97,8 @@
     (let [api* (keechma-pt/-get-api* app controller-name)]
       (apply api-fn @api* args))))
 
-
 (def redirect! (make-api-proxy pt/redirect!))
+(def replace! (make-api-proxy pt/replace!))
 (def back! (make-api-proxy pt/back!))
 (def get-url (make-api-proxy pt/get-url))
 
