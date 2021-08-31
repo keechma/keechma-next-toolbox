@@ -62,8 +62,9 @@
                             ;; Do a double conversion payload -> url -> url-payload
                             ;; to get the identical result to one we would get if the
                             ;; user clicked on the link
-                            (let [url (->> payload params-processor (map->url routes))
+                            (let [url (->> payload params-processor (router/map->url routes))
                                   url-payload (router/url->map routes url)]
+
                               (.replaceState js/history nil "" (url-with-hashbang url))
                               (reset! state* url-payload)))]
           (ctrl/transact ctrl transaction)))
