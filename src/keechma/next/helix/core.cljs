@@ -6,7 +6,6 @@
    [helix.hooks :as hooks]
    [keechma.next.helix.lib :refer [defnc]]
    ["react" :as react]
-   ["react-dom" :as rdom]
    [keechma.next.core :as keechma]
    [keechma.next.controller :as ctrl]
    [goog.object :as gobj]
