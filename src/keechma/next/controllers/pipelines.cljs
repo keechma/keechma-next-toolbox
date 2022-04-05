@@ -1,9 +1,9 @@
 (ns keechma.next.controllers.pipelines
-  (:require [keechma.next.controller :as ctrl]
+  (:require [clojure.set :as set]
+            [keechma.next.controller :as ctrl]
             [keechma.next.protocols :as protocols]
             [keechma.next.toolbox.protocols :as toolbox-protocols]
             [keechma.pipelines.core :refer [start! stop! invoke has-pipeline?]]
-            [clojure.set :as set]
             [keechma.pipelines.runtime :as ppr]))
 
 (derive ::controller :keechma/controller)

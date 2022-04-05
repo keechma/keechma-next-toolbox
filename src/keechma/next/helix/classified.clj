@@ -1,5 +1,5 @@
 (ns keechma.next.helix.classified
-  (:require [helix.core :as helix :refer [<> $]]
+  (:require [helix.core :as helix :refer [$]]
             [clojure.string :as str]))
 
 (defn get-type [component]

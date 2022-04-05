@@ -1,5 +1,5 @@
 (ns keechma.next.toolbox.logging
-  (:require [oops.core :refer [oget ocall oapply+ oget+ ocall+]]))
+  (:require [oops.core :refer [oget ocall oapply+ oget+]]))
 
 (def debug? ^boolean goog.DEBUG)
 
