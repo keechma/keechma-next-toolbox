@@ -25,6 +25,14 @@
                               (mf/get-in-errors form attr))))]
     (mf/format-error-messages (use-meta-sub props controller get-in-errors-cb))))
 
+(defn use-valid? [props controller]
+  (let [get-valid? (hooks/use-callback
+                     :once
+                     (fn [meta-state]
+                       (when-let [form (mfc/get-form meta-state)]
+                         (mf/valid? form))))]
+    (mf/format-error-messages (use-meta-sub props controller get-valid?))))
+
 (defn on-partial-change
   ([props controller attr value] (on-partial-change props controller attr value {}))
   ([props controller attr value opts]
