@@ -1,4 +1,5 @@
-(ns keechma.next.helix.classified)
+(ns keechma.next.helix.classified
+  (:require-macros [keechma.next.helix.classified :refer [defclassified]]))
 
 (defn get-element-props
   [props]
