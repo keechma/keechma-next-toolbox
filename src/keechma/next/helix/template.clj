@@ -1,7 +1,6 @@
 (ns keechma.next.helix.template
-  (:require [helix.core :as helix :refer [<> $]]
-            [clojure.walk :refer [postwalk prewalk]]
-            [clojure.set :as set]))
+  (:require [helix.core :as helix :refer [<>]]
+            [clojure.walk :refer [prewalk]]))
 
 (defn slot [slot-name & body])
 (defn optional-slot [slot-name & body])

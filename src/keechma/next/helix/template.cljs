@@ -1,7 +1,4 @@
-(ns keechma.next.helix.template
-  (:require [helix.dom :as d]
-            [helix.core :refer [$ defnc]])
-  (:require-macros [keechma.next.helix.template :refer [defnt]]))
+(ns keechma.next.helix.template)
 
 (defn fill-slot [props slot-name slot-content]
   (assoc-in props [::slots slot-name] slot-content))
